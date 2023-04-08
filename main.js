@@ -22,59 +22,14 @@ const syCanvas = document.getElementById('canvas-synth');
 ///////////////////////////////////////////
 // GRAPH
 let graphSq = new GraphControler(sqCanvas, sqCanvas.width/2, sqCanvas.width/2, (sqCanvas.width/2) -50);
-
 let graphSyn = new GraphControler(syCanvas, syCanvas.width/2, syCanvas.width/2, (syCanvas.width/2) -30);
 
 ///////////////////////////////////////////
 // AUDIO
 // synth 3 voies
 
-class PolySynth {
-    notesList;
-
-    nbrOfVoices;
-    oscList;
-
-
-
-    constructor(voices, notesArray) {
-        this.notesList = notesArray;
-
-        this.nbrOfVoices = voices;
-
-        this.outputNode = new BasicMerger(audioCtx);
-    }
-}
-
-let synth = new PolySynth(3, REF_NOTES);
-
-synth.trig = function(osc, freq, time = 300) {
-    console.log(osc)
-    osc.setFrequency(freq),
-    osc.setGain(1);
-
-    setTimeout(() => {
-        osc.setGain(0);
-    }, time);
-}
-
-
-// merger for oscillators
-synth.merger = new BasicMerger(audioCtx);
-
-for(let i = 0; i < synth.voices; i ++) {
-    let osc = new BasicOsc(audioCtx);
-    osc.index = i;
-    osc.setGain(0);
-
-    synth.oscs[i] = osc;
-    synth.merger.addModule(osc, true);
-}
-
-synth.merger.outputNode.connect(masterCtx.inputNode);
-
-
-
+let synth = new BasicPolySynth(3, REF_NOTES);
+synth.outputNode.connect(masterCtx.inputNode);
 
 
 
@@ -110,13 +65,13 @@ graphSyn.stepActivation = function(pnt) {
     // point enable and seq part storage
     if(pnt.isEnable === false) {
 
-        if(synthSeqStep.length < synth.voices) {
+        if(synthSeqStep.length < synth.nbrOfVoices) {
             this.enablePoint(pnt);
 
-            pnt.frequency = synth.REF_NOTES[pnt.index].frequency;
+            pnt.frequency = synth.notesList[pnt.index].frequency;
             pnt.oscIndex = synthSeqStep.length;
 
-            synth.oscs[pnt.oscIndex].setFrequency(pnt.frequency);
+            synth.oscList[pnt.oscIndex].setFrequency(pnt.frequency);
 
             synthSeqStep.push(pnt);
         }
@@ -126,7 +81,6 @@ graphSyn.stepActivation = function(pnt) {
         this.enablePoint(pnt);
         synthSeqStep.splice(synthSeqStep.indexOf(pnt), 1);
     }
-
 
     // console.log('graphSyn seq ' + seqIndex, graphSyn.sequence)
 }
@@ -141,8 +95,6 @@ graphSq.stepActivation = function(pnt) {
     graphSyn.points.forEach(pnt => {
         graphSyn.enablePoint(pnt, false);
     });
-
-
 
     let synSeq = graphSyn.sequence[pnt.index];
     
@@ -191,7 +143,7 @@ graphSyn.canvas.addEventListener('click', (e) => {
 
 
             if(pnt.isEnable) {
-                synth.trig(synth.oscs[pnt.oscIndex], pnt.frequency);
+                synth.trig(synth.oscList[pnt.oscIndex], pnt.frequency);
 
                 isPointTouched = true;
                 return;
@@ -210,7 +162,7 @@ graphSyn.canvas.addEventListener('click', (e) => {
             console.log(synthSeqStep);
 
             synthSeqStep.forEach(pnt => {
-                synth.trig(synth.oscs[pnt.oscIndex], pnt.frequency);
+                synth.trig(synth.oscList[pnt.oscIndex], pnt.frequency);
             })
         }
 
@@ -220,5 +172,5 @@ graphSyn.canvas.addEventListener('click', (e) => {
 
 
 graphSyn.canvas.addEventListener('mousedown', (e) => {
-    // synth.testOscs(graphSyn.sequence[graphSq.selectedStep]);
+    // synth.testoscList(graphSyn.sequence[graphSq.selectedStep]);
 })
