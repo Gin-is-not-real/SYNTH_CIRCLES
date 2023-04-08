@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEQ CIRCLE</title>
+</head>
+
+<body>
+
+    <main>
+        
+        <section id="master-section" class="vert-flex">
+            <!-- master CONTROLS -->
+            <fieldset id="field-master" class="hor-flex">
+                <legend>Master</legend>
+
+                <fieldset class="hor-flex">
+                    <input type="button" id="master-play" value="play">
+                    <input type="button" id="master-stop" value="stop">
+                </fieldset>
+
+                <fieldset>
+                    <legend>gain</legend>
+                    <input type="range" id="master-gain" min="0" max="1" step="0.01">
+                </fieldset>
+            </fieldset>
+        </section>
+
+        <div class="hor-flex">
+            <section id="seq-section" class="vert-flex">
+                <fieldset class="vert-flex">
+                    <legend>Seq</legend>
+    
+                    <div class="hor-flex">
+                        <fieldset>
+                            <legend>Steps</legend>
+                            <input type="number" name="steps" id="inp-steps" value="12">
+                        </fieldset>
+        
+                        <fieldset>
+                            <legend>Bpm</legend>
+                            <input type="number" name="bmp" id="inp-bmp" value="120">
+                        </fieldset>
+                    </div>
+    
+                    <div class="hor-flex">
+                        <canvas id="canvas-seq" width="300" height="300"></canvas>
+                    </div>
+                </fieldset>
+            </section>
+    
+    
+            <section id="synth-section" class="vert-flex">
+                <fieldset class="vert-flex">
+                    <legend>synth</legend>
+    <!-- 
+                    <div class="hor-flex">
+                        <fieldset>
+                            <legend>Bpm</legend>
+                            <input type="number" name="bmp" id="inp-bmp" value="120">
+                        </fieldset>
+                    </div> -->
+    
+                    <div class="hor-flex">
+                        <canvas id="canvas-synth" width="150" height="150"></canvas>
+                    </div>
+                </fieldset>
+            </section>
+        </div>
+
+
+    </main>
+
+</body>
+
+
+<script src="functionsTrigo.js"></script>
+
+<script src="graph/GraphControler.js"></script>
+
+
+<script src="audio/masterContext.js"></script>
+<script src="audio/BasicMerger.js"></script>
+<script src="audio/BasicOsc.js"></script>
+
+
+<!-- <script src="audio/basicsModules/BasicMerger.js"></script> -->
+<!-- <script src="audio/basicsModules/BasicTransport.js"></script> -->
+<!-- <script src="audio/basicsModules/BasicOsc.js"></script> -->
+<!-- <script src="audio/ControlsHandler.js"></script> -->
+<!-- <script src="audio/main.js"></script> -->
+
+<script src="main.js"></script>
+
+<style>
+    html * {
+        margin: 0;
+        padding: 0;
+        
+        /* border: 1px solid black; */
+    }
+
+    #main-section {
+        padding: 0 30px;
+        /* margin: 0 auto; */
+    }
+    #canvas-seq {
+        border: 1px solid black;
+    }
+
+    .vert-flex {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .hor-flex {
+        display: flex;
+        flex-direction: row;
+    }
+</style>
+
+</html>
