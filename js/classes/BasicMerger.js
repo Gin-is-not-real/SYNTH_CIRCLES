@@ -1,4 +1,8 @@
 /**
+ * The BasicMerger module is used for connect, thru and bypass signals for multiples sources.
+ * 
+ * Including a SplitterNode as inputNode, received the main source, and a MergerNode as outputNode. Merger input receive Splitter signal by default, or signals for connected and not bypassed modules from it modules list, and transmit signals to another module connected as ouptut.
+ * 
  * @property {AudioNode} inputNode
  * @property {AudioNode} outputNode
  * 
@@ -8,6 +12,7 @@
  * @property {Array} modules - list of internals modules
  * 
  * @method addModule(module, thru=false) 
+ * @method removeModule(module)
  * @method bypassModule(module)
  * @method thruModule(module)
  */
@@ -47,6 +52,17 @@ class BasicMerger {
         else {
             module.isGoToOut = false;
         }
+    }
+
+    /**
+     * Remove a module from the modules list
+     * @param {*} module - the module to remove
+     */
+    removeModule(module) {
+        module.outputNode.disconnect();
+        module.isGoToOut = false;
+
+        this.modules.splice(this.modules.indexOf(module), 1);
     }
 
 

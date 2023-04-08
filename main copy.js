@@ -1,20 +1,5 @@
 ///////////////////////////////////////////
 // CONSTS
-const REF_NOTES = [
-    {frequency: 261.63, FR: "do", EN: "C", key: "q"},
-    {frequency: 277.18, FR: "do#", EN: "C#", key: "z"},
-    {frequency: 293.66, FR: "ré", EN: "D", key: "s"},
-    {frequency: 311.13, FR: "ré", EN: "D#", key: "e"},
-    {frequency: 329.63, FR: "mi", EN: "E", key: "d"},
-    {frequency: 349.24, FR: "fa", EN: "F", key: "f"},
-    {frequency: 369.99, FR: "fa#", EN: "F#", key: "t"},
-    {frequency: 392, FR: "sol", EN: "G", key: "g"},
-    {frequency: 415.3, FR: "sol#", EN: "G#", key: "y"},
-    {frequency: 440, FR: "la", EN: "A", key: "h"},
-    {frequency: 466.16, FR: "la#", EN: "A#", key: "u"},
-    {frequency: 493.88, FR: "si", EN: "B", key: "j"},
-];
-
 const inpStep = document.getElementById('inp-steps');
 const sqCanvas = document.getElementById('canvas-seq');
 const syCanvas = document.getElementById('canvas-synth');
@@ -35,19 +20,32 @@ class PolySynth {
     nbrOfVoices;
     oscList;
 
-
-
     constructor(voices, notesArray) {
         this.notesList = notesArray;
 
         this.nbrOfVoices = voices;
-
-        this.outputNode = new BasicMerger(audioCtx);
+        
     }
 }
 
-let synth = new PolySynth(3, REF_NOTES);
-
+let synth = {
+    REF_NOTES: [
+        {frequency: 261.63, FR: "do", EN: "C", key: "q"},
+        {frequency: 277.18, FR: "do#", EN: "C#", key: "z"},
+        {frequency: 293.66, FR: "ré", EN: "D", key: "s"},
+        {frequency: 311.13, FR: "ré", EN: "D#", key: "e"},
+        {frequency: 329.63, FR: "mi", EN: "E", key: "d"},
+        {frequency: 349.24, FR: "fa", EN: "F", key: "f"},
+        {frequency: 369.99, FR: "fa#", EN: "F#", key: "t"},
+        {frequency: 392, FR: "sol", EN: "G", key: "g"},
+        {frequency: 415.3, FR: "sol#", EN: "G#", key: "y"},
+        {frequency: 440, FR: "la", EN: "A", key: "h"},
+        {frequency: 466.16, FR: "la#", EN: "A#", key: "u"},
+        {frequency: 493.88, FR: "si", EN: "B", key: "j"},
+    ],
+    voices: 3,
+    oscs: [],
+}
 synth.trig = function(osc, freq, time = 300) {
     console.log(osc)
     osc.setFrequency(freq),
@@ -57,6 +55,9 @@ synth.trig = function(osc, freq, time = 300) {
         osc.setGain(0);
     }, time);
 }
+
+// click sur un point: jouer le pnt
+// click au milieu: jouer la seq
 
 
 // merger for oscillators
