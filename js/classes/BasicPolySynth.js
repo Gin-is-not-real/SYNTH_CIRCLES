@@ -1,3 +1,18 @@
+/**
+ * @property {AudioNode} outputNode
+ * @property {AudioNode} merger
+ * 
+ * 
+ * @property {Array} notesList - list of internals notes
+ * @property {Integer} nbrOfVoices - number of oscillators
+ * @property {Array} oscList - list of internals osc nodes
+ * 
+ * @method init()
+ * @method trig()
+ * 
+ * @method SETTERS setNotesList
+ * @method GETTERS 
+ */
 class BasicPolySynth {
     outputNode;
     merger;
@@ -18,6 +33,9 @@ class BasicPolySynth {
         this.init();
     }
 
+    setNotesList(notesList) {
+        this.notesList = notesList;
+    }
 
     init() {
         let oscList = [];

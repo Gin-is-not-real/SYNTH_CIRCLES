@@ -19,14 +19,12 @@ const inpStep = document.getElementById('inp-steps');
 const sqCanvas = document.getElementById('canvas-seq');
 const syCanvas = document.getElementById('canvas-synth');
 
-///////////////////////////////////////////
-// GRAPH
-let graphSq = new GraphControler(sqCanvas, sqCanvas.width/2, sqCanvas.width/2, (sqCanvas.width/2) -50);
-let graphSyn = new GraphControler(syCanvas, syCanvas.width/2, syCanvas.width/2, (syCanvas.width/2) -30);
+
 
 ///////////////////////////////////////////
-// AUDIO
-// synth 3 voies
+// INSTANCES
+let graphSq = new GraphControler(sqCanvas, sqCanvas.width/2, sqCanvas.width/2, (sqCanvas.width/2) -50);
+let graphSyn = new GraphControler(syCanvas, syCanvas.width/2, syCanvas.width/2, (syCanvas.width/2) -30);
 
 let synth = new BasicPolySynth(3, REF_NOTES);
 synth.outputNode.connect(masterCtx.inputNode);
