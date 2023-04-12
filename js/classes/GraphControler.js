@@ -65,7 +65,7 @@ class GraphControler {
         this.drawPath(pnt);
     }
 
-    stepActivation(pnt) {
+    pointActivation(pnt) {
         console.log('please implement')
     }
 }

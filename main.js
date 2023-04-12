@@ -32,8 +32,17 @@ synth.outputNode.connect(masterCtx.inputNode);
 
 
 ///////////////////////////////////////////
+// tests
+
+
+///////////////////////////////////////////
 // MAIN
 init();
+
+/*
+init separés
+meilleur modes de declenchement
+*/
 
 ///////////////////////////////////////////
 // FUNCTION
@@ -49,52 +58,23 @@ function init() {
 }
 
 
-graphSyn.stepActivation = function(pnt) {
-    let seqIndex = parseInt(graphSq.selectedStep) || 0;
-
-
-    let synthSeqStep;
-    if(graphSyn.sequence[seqIndex] === undefined) {
-        graphSyn.sequence[seqIndex] = new Array(0);
-    }
-    synthSeqStep = graphSyn.sequence[seqIndex];
-    
-
-    // point enable and seq part storage
-    if(pnt.isEnable === false) {
-
-        if(synthSeqStep.length < synth.nbrOfVoices) {
-            this.enablePoint(pnt);
-
-            pnt.frequency = synth.notesList[pnt.index].frequency;
-            pnt.oscIndex = synthSeqStep.length;
-
-            synth.oscList[pnt.oscIndex].setFrequency(pnt.frequency);
-
-            synthSeqStep.push(pnt);
-        }
-    }
-    
-    else if(pnt.isEnable === true) {
-        this.enablePoint(pnt);
-        synthSeqStep.splice(synthSeqStep.indexOf(pnt), 1);
-    }
-
-    // console.log('graphSyn seq ' + seqIndex, graphSyn.sequence)
-}
-
-
-
-graphSq.stepActivation = function(pnt) {
+graphSq.pointActivation = function(pnt) {
     graphSq.enablePoint(pnt);
     graphSq.selectedStep = pnt.index;
 
+    graphSyn.receiveControlPoint(pnt);
+}    
 
+
+graphSyn.receiveControlPoint = function(stepPnt) {
+    // disable all points
     graphSyn.points.forEach(pnt => {
         graphSyn.enablePoint(pnt, false);
     });
 
-    let synSeq = graphSyn.sequence[pnt.index];
+
+    // enable point from sequence
+    let synSeq = graphSyn.sequence[stepPnt.index];
     
     if(synSeq !== undefined) {
         
@@ -102,9 +82,56 @@ graphSq.stepActivation = function(pnt) {
             let pnt = synSeq[i];
             graphSyn.enablePoint(pnt, true);
         }
+
+        if(stepPnt.isEnable) {
+            graphSyn.sendControlPoint(synth, synSeq);
+        }
+    }
+}
+
+graphSyn.pointActivation = function(pnt) {
+    let seqIndex = parseInt(graphSq.selectedStep) || 0;
+
+    // get or init the step sequence
+    let synthSeqStep;
+    if(graphSyn.sequence[seqIndex] === undefined) {
+        graphSyn.sequence[seqIndex] = new Array(0);
+    }
+    synthSeqStep = graphSyn.sequence[seqIndex];
+    
+
+    // if the point is disable
+    if(pnt.isEnable === false) {
+
+        if(synthSeqStep.length < synth.nbrOfVoices) {
+            this.enablePoint(pnt);
+
+            // update point value and add them on sequence step
+            pnt.frequency = synth.notesList[pnt.index].frequency;
+            pnt.oscIndex = synthSeqStep.length;
+            synthSeqStep.push(pnt);
+
+            graphSyn.sendControlPoint(synth, [pnt]);
+        }
+    }
+    
+    else if(pnt.isEnable === true) {
+        this.enablePoint(pnt);
+        // remove from seq step list
+        synthSeqStep.splice(synthSeqStep.indexOf(pnt), 1);
     }
 
-}    
+}
+
+
+graphSyn.sendControlPoint = function(target, controls) {
+    // let synthSeqStep = graphSyn.sequence[graphSq.selectedStep];
+
+    controls.forEach(pnt => {
+        target.trig(target.oscList[pnt.oscIndex], pnt.frequency);
+    })
+}
+
 
 
 
@@ -122,9 +149,7 @@ graphSq.canvas.addEventListener('click', (e) => {
         const isPointInPath = graphSq.ctx.isPointInPath(pnt.path, e.offsetX, e.offsetY);
 
         if(isPointInPath) {
-            graphSq.stepActivation(pnt);
-            // graphSq.enablePoint(pnt);
-
+            graphSq.pointActivation(pnt);
         }
     })
 });
@@ -134,15 +159,13 @@ graphSq.canvas.addEventListener('click', (e) => {
 graphSyn.canvas.addEventListener('click', (e) => {
     let isPointTouched = false;
 
+    // check if a point has been touched
     graphSyn.points.forEach(pnt => {
 
         if(graphSyn.ctx.isPointInPath(pnt.path, e.offsetX, e.offsetY)) {
-            graphSyn.stepActivation(pnt);
-
+            graphSyn.pointActivation(pnt);
 
             if(pnt.isEnable) {
-                synth.trig(synth.oscList[pnt.oscIndex], pnt.frequency);
-
                 isPointTouched = true;
                 return;
             }
@@ -152,19 +175,8 @@ graphSyn.canvas.addEventListener('click', (e) => {
 
     if(!isPointTouched) {
         console.log('not point');
-
-
         let synthSeqStep = graphSyn.sequence[graphSq.selectedStep];
-
-        if(synthSeqStep) {
-            console.log(synthSeqStep);
-
-            synthSeqStep.forEach(pnt => {
-                synth.trig(synth.oscList[pnt.oscIndex], pnt.frequency);
-            })
-        }
-
-
+        graphSyn.sendControlPoint(synth, synthSeqStep);
     }
 });
 
