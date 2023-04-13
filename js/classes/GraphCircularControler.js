@@ -69,15 +69,6 @@ class GraphCircularControler {
 
 
     /**
-     * Init all controls by callbacks
-     */
-    // initControls() {
-    //     this.initControlCircle();
-    //     this.initControlsSteps();
-    // }
-
-
-    /**
      * Init the control circle with property path
      */
     initControlCircle() {
