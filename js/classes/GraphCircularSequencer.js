@@ -74,6 +74,7 @@ class GraphCircularSequencer extends GraphCircularControler {
     selectStep(step) {
         this.sendControlStep(this.selectedStep, step);
         this.selectedStep = step;
+        this.drawCanvas();
     }
 
     // activer

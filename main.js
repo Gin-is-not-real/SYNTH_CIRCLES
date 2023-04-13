@@ -15,6 +15,8 @@ const REF_NOTES = [
     {frequency: 493.88, FR: "si", EN: "B", key: "j"},
 ];
 
+
+const btnPlay = document.getElementById('master-play');
 const inpStep = document.getElementById('inp-steps');
 const btnRefresh = document.getElementById('btn-refresh');
 const sqCanvas = document.getElementById('canvas-seq');
@@ -125,7 +127,6 @@ circleSeq.sendControlStep = function(oldStep, newStep) {
     let data = [{id: oldStep.id}, {id: newStep.id}];
     circleSynth.receiveControls(data);
 }
-
 ///////////////////////////////////////////
 // MAIN
 circleSeq.selectStep(circleSeq.controls.steps[0]);
@@ -133,6 +134,23 @@ circleSeq.selectStep(circleSeq.controls.steps[0]);
 
 ///////////////////////////////////////////
 // GRAPH EVENTS
+btnPlay.addEventListener('click', function(e) {
+    console.log(e.target.value)
+
+    let speed = 600;
+    let count = 0;
+    
+    setInterval(function() {
+        let step = circleSeq.controls.steps[count];
+        console.log(count, step)
+
+        circleSeq.selectStep(step);
+
+        
+        count = count === circleSeq.nbrOfSteps -1 ? 0 : count +1;
+    }, speed)
+
+})
 
 btnRefresh.addEventListener('click', function() {
     let steps = inpStep.value;
