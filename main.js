@@ -36,7 +36,7 @@ let circleSynth = new GraphCircularSynth(syCanvas, syCanvas.width/2, syCanvas.wi
 circleSynth.changeNbrOfSteps(synth.notesList.length);
 circleSynth.maxEnablesSteps = synth.nbrOfVoices;
 
-circleSynth.memory = new Array(circleSeq.nbrOfVoices);
+// circleSynth.memory = new Array(circleSeq.nbrOfVoices);
 
 ///////////////////////////////////////////
 // FUNCTION
@@ -59,11 +59,6 @@ synth.receiveControls = function(data) {
  */
 circleSynth.sendControlCircle = function() {
     let data = [];
-    // circleSynth.controls.steps.forEach(step => {
-    //     if(step.isEnable) {
-    //         data.push({id: step.id});
-    //     }
-    // })
     circleSynth.enablesSteps.forEach(step => {
         data.push({id: step.id});
     })
@@ -107,14 +102,14 @@ circleSynth.receiveControls = function(data) {
 
     // load new memory
     if(circleSynth.memory[data[1].id] !== undefined) {
-        
+
         circleSynth.memory[data[1].id].forEach(mem => {
             this.stepEnable(mem);
         })
     }
 
     this.drawCanvas();
-
+    this.sendControlCircle();
 }
 
 /////////////////////////
@@ -138,15 +133,12 @@ circleSeq.selectStep(circleSeq.controls.steps[0]);
 
 ///////////////////////////////////////////
 // GRAPH EVENTS
-// inpStep.addEventListener('input', () => {
-//     init();
-// })
-
 
 btnRefresh.addEventListener('click', function() {
     let steps = inpStep.value;
     //init sequencer with new nbr of steps
     circleSeq.changeNbrOfSteps(steps);
+    circleSynth.init();
 })
 
 
@@ -182,31 +174,3 @@ circleSynth.canvas.addEventListener('click', (e) => {
         }
     }
 })
-// circleSynth.canvas.addEventListener('click', (e) => {
-//     let isPointTouched = false;
-
-//     // check if a point has been touched
-//     circleSynth.points.forEach(pnt => {
-
-//         if(circleSynth.ctx.isPointInPath(pnt.path, e.offsetX, e.offsetY)) {
-//             circleSynth.pointActivation(pnt);
-
-//             if(pnt.isEnable) {
-//                 isPointTouched = true;
-//                 return;
-//             }
-//         }
-//     })
-
-
-//     if(!isPointTouched) {
-//         console.log('not point');
-//         let synthSeqdControlPoint(synth, synthSeqStep);Step = circleSynth.sequence[graphSq.selectedStep];
-//         circleSynth.sen
-//     }
-// });
-
-
-// circleSynth.canvas.addEventListener('mousedown', (e) => {
-//     // synth.testoscList(circleSynth.sequence[graphSq.selectedStep]);
-// })

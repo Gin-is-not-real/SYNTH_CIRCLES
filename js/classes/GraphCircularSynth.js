@@ -29,11 +29,22 @@
 class GraphCircularSynth extends GraphCircularControler {
     maxEnablesSteps;
     enablesSteps = [];
+    memory = [];
 
     constructor(canvas, x, y, r, nbrOfSteps = 12) {
         super(canvas, x, y, r, nbrOfSteps = 12);
     }
 
+    /**
+     * Init all controls and draw canvas by callbacks
+     */
+    init() {
+        this.enablesSteps = [];
+        this.memory = [];
+        this.initControlCircle();
+        this.initControlsSteps();
+        this.drawCanvas();
+    }
 
     /**
      * Draw the control point path from the step point in parameter
