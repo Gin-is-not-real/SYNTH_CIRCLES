@@ -24,6 +24,7 @@ class GraphCircularSynth extends GraphCircularControler {
     maxEnablesSteps;
     enablesSteps = [];
     memory = [];
+    selectedMemoryId;
 
     constructor(canvas, x, y, r, nbrOfSteps = 12) {
         super(canvas, x, y, r);
@@ -41,6 +42,7 @@ class GraphCircularSynth extends GraphCircularControler {
         }
         this.enablesSteps = [];
         this.memory = [];
+        this.selectedMemoryId = 0;
         this.initControlCircle();
         this.initControlsSteps();
         this.drawCanvas();
@@ -81,6 +83,8 @@ class GraphCircularSynth extends GraphCircularControler {
                 this.sendControlsSteps([step])
             }
         }
+
+        this.recordMemoryLine(this.selectedMemoryId);
         this.drawCanvas();
     }
 
@@ -102,8 +106,48 @@ class GraphCircularSynth extends GraphCircularControler {
         this.enablesSteps.splice(this.enablesSteps.indexOf(step), 1);
     }
 
+    /**
+     * Clear the enablesSteps array by set this steps isEnable to false and reset the array
+     */
+    resetEnables() {
+        this.enablesSteps.forEach(step => {
+            step.isEnable = false;
+        })
+        this.enablesSteps = []
 
+        this.drawCanvas();
 
+    }
+
+    /**
+     * Record the enablesSteps on a memory line according to the id in parameter
+     * @param {Integer} lineId the id of the line to record
+     */
+    recordMemoryLine(lineId) {
+        this.memory[lineId] = [];
+        this.enablesSteps.forEach(step => {
+            this.memory[lineId].push(step);
+        })
+    }
+
+    /**
+     * Load enablesSteps from the memory line at the index in parameter 
+     * @param {Integer} lineId 
+     */
+    loadMemoryLine(lineId) {
+        // console.log('load ', lineId, circleSynth.memory[lineId])
+        this.resetEnables();
+
+        this.selectedMemoryId = lineId;
+
+        if(circleSynth.memory[lineId] !== undefined) {
+            this.memory[lineId].forEach(mem => {
+                this.stepEnable(mem);
+            })
+        }
+
+        this.drawCanvas();
+    }
 
     sendControlsSteps(step) {
         // redefined on main

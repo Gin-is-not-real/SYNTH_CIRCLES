@@ -81,29 +81,13 @@ circleSynth.sendControlsSteps = function(steps) {
  * 
  * @param {Array of Object} data an array containing two objects with id property; the old sequencer selectedStep and the new.
  */
-circleSynth.receiveControls = function(data) {
-    // rec old enables step on memory 
-    circleSynth.memory[data[0].id] = [];
-    circleSynth.enablesSteps.forEach(step => {
-        circleSynth.memory[data[0].id].push(step);
-    })
+circleSynth.receiveControls = function(data, type) {
+    this.resetEnables();
+    this.loadMemoryLine(data.newStep.id);
 
-    // reset
-    this.enablesSteps.forEach(step => {
-        step.isEnable = false;
-    })
-    circleSynth.enablesSteps = [];
-
-    // load new memory
-    if(circleSynth.memory[data[1].id] !== undefined) {
-
-        circleSynth.memory[data[1].id].forEach(mem => {
-            this.stepEnable(mem);
-        })
+    if(data.newStep.isEnable) {
+        this.sendControlsSteps(circleSynth.enablesSteps);
     }
-
-    this.drawCanvas();
-    this.sendControlsSteps(circleSynth.enablesSteps);
 }
 
 /////////////////////////
@@ -115,16 +99,15 @@ circleSynth.receiveControls = function(data) {
  * @param {Object} oldStep the old sequencer selectedStep
  * @param {*} newStep the new sequencer selectedStep
  */
-circleSeq.sendControlsSteps = function(oldStep, newStep) {
-    let data = [{id: oldStep.id}, {id: newStep.id}];
-    circleSynth.receiveControls(data);
+circleSeq.sendControlsSteps = function(oldStep, newStep, type) {
+    let data = {oldStep: oldStep, newStep: newStep};
+    circleSynth.receiveControls(data, type);
 }
 ///////////////////////////////////////////
 // MAIN
 circleSeq.selectStep(circleSeq.controls.steps[0]);
 
 // TODO
-// dissocier step selected and step running
 // ne jouer que les notes allumées
 
 
@@ -135,12 +118,11 @@ let intervalId;
 btnPlay.addEventListener('click', function(e) {
     console.log(e.target.value)
 
-    let speed = 300;
+    let speed = 600;
     let count = 0;
     
     intervalId = setInterval(function() {
         let step = circleSeq.controls.steps[count];
-        console.log(count, step)
 
         circleSeq.playStep(step);
         
@@ -184,7 +166,6 @@ circleSynth.canvas.addEventListener('click', (e) => {
             return;
         }
     })
-
 
     if(isPointTouched === false) {
         if(circleSynth.ctx.isPointInPath(circleSynth.controls.circle.path, e.offsetX, e.offsetY)) {

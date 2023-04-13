@@ -75,8 +75,9 @@ class GraphCircularSequencer extends GraphCircularControler {
      * @param {Object} step 
      */
     playStep(step) {
-        this.sendControlsSteps(this.playedStep, step);
         this.playedStep = step;
+
+        this.sendControlsSteps(this.playedStep, step, 'play');
         this.drawCanvas();
     }
 
@@ -103,7 +104,7 @@ class GraphCircularSequencer extends GraphCircularControler {
      * @param {Object} step 
      */
     selectStep(step) {
-        this.sendControlsSteps(this.selectedStep, step);
+        this.sendControlsSteps(this.selectedStep, step, 'select');
         this.selectedStep = step;
         this.drawCanvas();
     }
@@ -125,7 +126,7 @@ class GraphCircularSequencer extends GraphCircularControler {
         step.isEnable = false;
     }
 
-    
+
     sendControlsSteps(step) {
         // send control step to synth controler: , pour selectionner et lire la sequence
         console.log('please redefine on main ');
