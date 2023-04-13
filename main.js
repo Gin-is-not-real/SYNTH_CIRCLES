@@ -16,6 +16,7 @@ const REF_NOTES = [
 ];
 
 const inpStep = document.getElementById('inp-steps');
+const btnRefresh = document.getElementById('btn-refresh');
 const sqCanvas = document.getElementById('canvas-seq');
 const syCanvas = document.getElementById('canvas-synth');
 
@@ -23,164 +24,189 @@ const syCanvas = document.getElementById('canvas-synth');
 
 ///////////////////////////////////////////
 // INSTANCES
-let graphSq = new GraphControler(sqCanvas, sqCanvas.width/2, sqCanvas.width/2, (sqCanvas.width/2) -50);
-let graphSyn = new GraphControler(syCanvas, syCanvas.width/2, syCanvas.width/2, (syCanvas.width/2) -30);
 
 let synth = new BasicPolySynth(3, REF_NOTES);
 synth.outputNode.connect(masterCtx.inputNode);
 
 
+let circleSeq = new GraphCircularSequencer(sqCanvas, sqCanvas.width/2, sqCanvas.width/2, (sqCanvas.width/2) -50);
+circleSeq.init();
 
-///////////////////////////////////////////
-// tests
+let circleSynth = new GraphCircularSynth(syCanvas, syCanvas.width/2, syCanvas.width/2, (syCanvas.width/2) -30);
+circleSynth.changeNbrOfSteps(synth.notesList.length);
+circleSynth.maxEnablesSteps = synth.nbrOfVoices;
 
-
-///////////////////////////////////////////
-// MAIN
-init();
-
-/*
-init separés
-meilleur modes de declenchement
-*/
+circleSynth.memory = new Array(circleSeq.nbrOfVoices);
 
 ///////////////////////////////////////////
 // FUNCTION
-function init() {
-    graphSq.init(inpStep.value);
-    graphSq.selectedStep = 0;
-    graphSq.draw();
-
-
-    graphSyn.init(12);
-    graphSyn.draw();
-    graphSyn.sequence = new Array(parseInt(inpStep.value));
-}
-
-
-graphSq.pointActivation = function(pnt) {
-    graphSq.enablePoint(pnt);
-    graphSq.selectedStep = pnt.index;
-
-    graphSyn.receiveControlPoint(pnt);
-}    
-
-
-graphSyn.receiveControlPoint = function(stepPnt) {
-    // disable all points
-    graphSyn.points.forEach(pnt => {
-        graphSyn.enablePoint(pnt, false);
-    });
-
-
-    // enable point from sequence
-    let synSeq = graphSyn.sequence[stepPnt.index];
-    
-    if(synSeq !== undefined) {
-        
-        for(let i = 0; i < synSeq.length; i++) {
-            let pnt = synSeq[i];
-            graphSyn.enablePoint(pnt, true);
-        }
-
-        if(stepPnt.isEnable) {
-            graphSyn.sendControlPoint(synth, synSeq);
-        }
+/**
+ * Receive controls data {id} from synth controler, get notes frequencies associate, and trig oscs  
+ * @param {Object} data data = {id}
+ */
+synth.receiveControls = function(data) {
+    for(let i = 0; i < data.length; i++) {
+        let f = synth.notesList[data[i].id].frequency;
+        synth.trig(synth.oscList[i], f)
     }
 }
 
-graphSyn.pointActivation = function(pnt) {
-    let seqIndex = parseInt(graphSq.selectedStep) || 0;
+/////////////////////////
 
-    // get or init the step sequence
-    let synthSeqStep;
-    if(graphSyn.sequence[seqIndex] === undefined) {
-        graphSyn.sequence[seqIndex] = new Array(0);
-    }
-    synthSeqStep = graphSyn.sequence[seqIndex];
-    
-
-    // if the point is disable
-    if(pnt.isEnable === false) {
-
-        if(synthSeqStep.length < synth.nbrOfVoices) {
-            this.enablePoint(pnt);
-
-            // update point value and add them on sequence step
-            pnt.frequency = synth.notesList[pnt.index].frequency;
-            pnt.oscIndex = synthSeqStep.length;
-            synthSeqStep.push(pnt);
-
-            graphSyn.sendControlPoint(synth, [pnt]);
-        }
-    }
-    
-    else if(pnt.isEnable === true) {
-        this.enablePoint(pnt);
-        // remove from seq step list
-        synthSeqStep.splice(synthSeqStep.indexOf(pnt), 1);
-    }
-
-}
-
-
-graphSyn.sendControlPoint = function(target, controls) {
-    // let synthSeqStep = graphSyn.sequence[graphSq.selectedStep];
-
-    controls.forEach(pnt => {
-        target.trig(target.oscList[pnt.oscIndex], pnt.frequency);
+/**
+ * Called by a click on the graph synth circle path. 
+ * Send enablesSteps to the sound generator by calling this receiveControls function for each enable step
+ */
+circleSynth.sendControlCircle = function() {
+    let data = [];
+    // circleSynth.controls.steps.forEach(step => {
+    //     if(step.isEnable) {
+    //         data.push({id: step.id});
+    //     }
+    // })
+    circleSynth.enablesSteps.forEach(step => {
+        data.push({id: step.id});
     })
+    synth.receiveControls(data);
 }
 
+/**
+ * Called by this.controlStepActivation function. Send the id of the graph synth step activated to the sound generator by calling this receiveControls function
+ * @param {Object} step 
+ */
+circleSynth.sendControlStep = function(step) {
+    if(step.isEnable === true) {
+        let data = [{id: step.id}];
+        synth.receiveControls(data);
+    }
+}
 
+/**
+ * Called by the sequencer sendControlStep function.
+ * 
+ * Record enablesSteps on the memory line corresponding to the old sequencer selectedStep
+ * 
+ * clear enablesSteps and disable all steps 
+ * 
+ * load the memory line according to the sequencer new selectedStep
+ * 
+ * @param {Array of Object} data an array containing two objects with id property; the old sequencer selectedStep and the new.
+ */
+circleSynth.receiveControls = function(data) {
+    // rec old enables step on memory 
+    circleSynth.memory[data[0].id] = [];
+    circleSynth.enablesSteps.forEach(step => {
+        circleSynth.memory[data[0].id].push(step);
+    })
 
+    // reset
+    this.enablesSteps.forEach(step => {
+        step.isEnable = false;
+    })
+    circleSynth.enablesSteps = [];
 
+    // load new memory
+    if(circleSynth.memory[data[1].id] !== undefined) {
+        
+        circleSynth.memory[data[1].id].forEach(mem => {
+            this.stepEnable(mem);
+        })
+    }
 
+    this.drawCanvas();
+
+}
+
+/////////////////////////
+/**
+ * Called by this.selectStep(). 
+ * Send old an new selectedStep id to the synth controler
+ * 
+ * 
+ * @param {Object} oldStep the old sequencer selectedStep
+ * @param {*} newStep the new sequencer selectedStep
+ */
+circleSeq.sendControlStep = function(oldStep, newStep) {
+    let data = [{id: oldStep.id}, {id: newStep.id}];
+    circleSynth.receiveControls(data);
+}
+
+///////////////////////////////////////////
+// MAIN
+circleSeq.selectStep(circleSeq.controls.steps[0]);
 
 
 ///////////////////////////////////////////
 // GRAPH EVENTS
-inpStep.addEventListener('input', () => {
-    init();
+// inpStep.addEventListener('input', () => {
+//     init();
+// })
+
+
+btnRefresh.addEventListener('click', function() {
+    let steps = inpStep.value;
+    //init sequencer with new nbr of steps
+    circleSeq.changeNbrOfSteps(steps);
 })
 
-graphSq.canvas.addEventListener('click', (e) => {
-    graphSq.points.forEach(pnt => {
-        const isPointInPath = graphSq.ctx.isPointInPath(pnt.path, e.offsetX, e.offsetY);
+
+circleSeq.canvas.addEventListener('click', (e) => {
+    // verifier si un point est touché
+    circleSeq.controls.steps.forEach(pnt => {
+        const isPointInPath = circleSeq.ctx.isPointInPath(pnt.path, e.offsetX, e.offsetY);
 
         if(isPointInPath) {
-            graphSq.pointActivation(pnt);
+            circleSeq.controlStepActivation(pnt);
         }
     })
 });
 
-
-
-graphSyn.canvas.addEventListener('click', (e) => {
+circleSynth.canvas.addEventListener('click', (e) => {
     let isPointTouched = false;
 
     // check if a point has been touched
-    graphSyn.points.forEach(pnt => {
+    circleSynth.controls.steps.forEach(step => {
 
-        if(graphSyn.ctx.isPointInPath(pnt.path, e.offsetX, e.offsetY)) {
-            graphSyn.pointActivation(pnt);
+        if(circleSynth.ctx.isPointInPath(step.path, e.offsetX, e.offsetY)) {
+            circleSynth.controlStepActivation(step);
 
-            if(pnt.isEnable) {
-                isPointTouched = true;
-                return;
-            }
+            isPointTouched = true;
+            return;
         }
     })
 
 
-    if(!isPointTouched) {
-        console.log('not point');
-        let synthSeqStep = graphSyn.sequence[graphSq.selectedStep];
-        graphSyn.sendControlPoint(synth, synthSeqStep);
+    if(isPointTouched === false) {
+        if(circleSynth.ctx.isPointInPath(circleSynth.controls.circle.path, e.offsetX, e.offsetY)) {
+            circleSynth.controlCircleActivation();
+        }
     }
-});
-
-
-graphSyn.canvas.addEventListener('mousedown', (e) => {
-    // synth.testoscList(graphSyn.sequence[graphSq.selectedStep]);
 })
+// circleSynth.canvas.addEventListener('click', (e) => {
+//     let isPointTouched = false;
+
+//     // check if a point has been touched
+//     circleSynth.points.forEach(pnt => {
+
+//         if(circleSynth.ctx.isPointInPath(pnt.path, e.offsetX, e.offsetY)) {
+//             circleSynth.pointActivation(pnt);
+
+//             if(pnt.isEnable) {
+//                 isPointTouched = true;
+//                 return;
+//             }
+//         }
+//     })
+
+
+//     if(!isPointTouched) {
+//         console.log('not point');
+//         let synthSeqdControlPoint(synth, synthSeqStep);Step = circleSynth.sequence[graphSq.selectedStep];
+//         circleSynth.sen
+//     }
+// });
+
+
+// circleSynth.canvas.addEventListener('mousedown', (e) => {
+//     // synth.testoscList(circleSynth.sequence[graphSq.selectedStep]);
+// })
