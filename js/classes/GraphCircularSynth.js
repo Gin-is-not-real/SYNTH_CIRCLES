@@ -8,21 +8,15 @@
  * @param {Object} controls object containing controls: {circle: {path}, steps: [ {x, y, r, path, id, isEnable} ]}
  * @param {Integer} maxEnablesSteps the max number for enables steps
  * @param {Array} enablesSteps the enables steps
+ * @param {Array} memory multi array to store sequences of enables step
  * 
  * 
- * @method changeNbrOfSteps(nbr)
+ * @method init(nbrOfSteps)
  * 
- * @method init()
- * @method initControlCircle()
- * @method initControlsSteps()
- * 
- * @method drawCanvas()
- * @method drawControlCircle()
  * @method drawControlPoint()
  * 
  * @method controlCircleActivation()
  * @method controlStepActivation(step)
- * @method selectStep(step)
  * @method stepEnable(step)
  * @method stepDisable(step)
  */
@@ -38,11 +32,12 @@ class GraphCircularSynth extends GraphCircularControler {
     }
 
     /**
-     * Init all controls and draw canvas by callbacks
+     * Init or reset properties, controls and draw canvas by callbacks
+     * @param {Integer} nbrOfSteps the new number of steps around the circle
      */
-    init(nbr) {
-        if(nbr !== undefined) {
-            this.nbrOfSteps = nbr;
+    init(nbrOfSteps) {
+        if(nbrOfSteps !== undefined) {
+            this.nbrOfSteps = nbrOfSteps;
         }
         this.enablesSteps = [];
         this.memory = [];
@@ -64,7 +59,18 @@ class GraphCircularSynth extends GraphCircularControler {
     }
 
 
-    // activation d'un control point
+    /**
+     * Called when the circle path is activated
+     */
+    controlCircleActivation() {
+        this.sendControlsSteps(this.enablesSteps);
+    }
+
+
+    /**
+     * Called when a step is activated. enable/disable the step, send controls if necessary and draw the canvas
+     * @param {Object} step the step to activate
+     */
     controlStepActivation(step) {
         if(step.isEnable === true) {
             this.stepDisable(step);
@@ -75,36 +81,32 @@ class GraphCircularSynth extends GraphCircularControler {
                 this.sendControlsSteps([step])
             }
         }
-
         this.drawCanvas();
     }
 
-    // activer
+    /**
+     * Make the step enable and store them on the enablesSteps array
+     * @param {Object} step 
+     */
     stepEnable(step) {
         step.isEnable = true;
         this.enablesSteps.push(step);
     }
 
-    // desactiver
+    /**
+     * Make the step disable and remove them from the enablesSteps array
+     * @param {Object} step 
+     */
     stepDisable(step) {
         step.isEnable = false;
         this.enablesSteps.splice(this.enablesSteps.indexOf(step), 1);
     }
 
 
-    controlCircleActivation() {
-        this.sendControlsSteps(this.enablesSteps);
-    }
 
 
-    sendControlStep(step) {
+    sendControlsSteps(step) {
         // redefined on main
         console.log('please redefine on main ');
     }
-    sendControlCircle() {
-        console.log('please redefine on main ');
-    }
-    // playSequence
-    // foreach step, if isEnable:
-    //  send control to synth controler
 }

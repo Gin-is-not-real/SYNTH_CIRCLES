@@ -7,18 +7,13 @@
  * @param {Integer} nbrOfSteps the number of points on the circle perimeter
  * @param {Object} controls object containing controls: {circle: {path}, steps: [ {x, y, r, path, id, isEnable} ]}
  * @param {Object} selectedStep the seleted step
+ * @param {Object} playedStep the played step
  * 
- * @method changeNbrOfSteps(nbr)
  * 
- * @method init()
- * @method initControlCircle()
- * @method initControlsSteps()
+ * @method init(nbrOfSteps)
  * 
- * @method drawCanvas()
- * @method drawControlCircle()
  * @method drawControlPoint()
  * 
- * @method controlCircleActivation()
  * @method controlStepActivation(step)
  * @method stepEnable(step)
  * @method stepDisable(step)
@@ -34,7 +29,8 @@ class GraphCircularSequencer extends GraphCircularControler {
     }
 
     /**
-     * Init all controls and draw canvas by callbacks
+     * Init or reset properties, controls and draw canvas by callbacks
+     * @param {Integer} nbrOfSteps the new number of steps around the circle
      */
     init(nbrOfSteps) {
         if(nbrOfSteps !== undefined) {
@@ -74,7 +70,21 @@ class GraphCircularSequencer extends GraphCircularControler {
     }
 
 
-    // activation d'un control point
+    /**
+     * 
+     * @param {Object} step 
+     */
+    playStep(step) {
+        this.sendControlsSteps(this.playedStep, step);
+        this.playedStep = step;
+        this.drawCanvas();
+    }
+
+
+    /**
+     * Called when a step is activated. Select a step by calling selectStep fucntion, enable/disable the step, send controls if necessary and draw the canvas
+     * @param {Object} step the step to activate
+     */
     controlStepActivation(step) {
         this.selectStep(step);
 
@@ -88,27 +98,34 @@ class GraphCircularSequencer extends GraphCircularControler {
         this.drawCanvas();
     }
 
+    /**
+     * Called when a step is selected. Send controls (old and new selectedStep) and update the selectedStep property, then draw the canvas
+     * @param {Object} step 
+     */
     selectStep(step) {
         this.sendControlsSteps(this.selectedStep, step);
         this.selectedStep = step;
         this.drawCanvas();
     }
-    playStep(step) {
-        this.sendControlsSteps(this.playedStep, step);
-        this.playedStep = step;
-        this.drawCanvas();
-    }
 
-    // activer
+
+    /**
+     * Make the step enable by switch this isEnable property
+     * @param {Object} step 
+     */
     stepEnable(step) {
         step.isEnable = true;
     }
 
-    // desactiver
+    /**
+     * Make the step disable by switch this isEnable property
+     * @param {Object} step 
+     */
     stepDisable(step) {
         step.isEnable = false;
     }
 
+    
     sendControlsSteps(step) {
         // send control step to synth controler: , pour selectionner et lire la sequence
         console.log('please redefine on main ');

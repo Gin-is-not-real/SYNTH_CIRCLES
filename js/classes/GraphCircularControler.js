@@ -1,14 +1,12 @@
 /**
- * 
  * @param {HTMLCanvasElement} canvas
  * @param {} ctx 
+ * 
  * @param {Integer} x
  * @param {Integer} y 
  * @param {Integer} r radius
  * @param {Integer} nbrOfSteps the number of points on the circle perimeter
  * @param {Object} controls object containing controls: {circle: {path}, steps: [ {x, y, r, path, id, isEnable} ]}
- * 
- * @method changeNbrOfSteps(nbr)
  * 
  * @method init()
  * @method initControlCircle()
@@ -18,10 +16,6 @@
  * @method drawControlCircle()
  * @method drawControlPoint()
  * 
- * @method controlCircleActivation()
- * @method controlStepActivation(step)
- * @method stepEnable(step)
- * @method stepDisable(step)
  */
 class GraphCircularControler {
     canvas; ctx;    // for draw functions
@@ -116,29 +110,32 @@ class GraphCircularControler {
     }
 
 //////////////////////////////////////////////////////
-    // activation du control circle
-    controlCircleActivation() {
-        console.log('not implement')
-    }
-    // activation d'un control point
-    controlStepActivation(step) {
-        console.log('not implement')
-    }
+// * @method controlCircleActivation()
+// * @method controlStepActivation(step)
+// * @method stepEnable(step)
+// * @method stepDisable(step)
 
-    stepSelect(step) {
-        console.log('not implement')
-    }
-    drawSelectedStep(step) {
-        console.log('not implement')
-    }
+    // activation du control circle
+    // controlCircleActivation() {
+    //     console.log('not implement')
+    // }
+    // activation d'un control point
+    // controlStepActivation(step) {
+    //     console.log('not implement')
+    // }
+
+    // stepSelect(step) {
+    //     console.log('not implement')
+    // }
+
     // activer
-    stepEnable(step) {
-        console.log('not implement')
-    }
+    // stepEnable(step) {
+    //     console.log('not implement')
+    // }
 
     // desactiver
-    stepDisable(step) {
-        console.log('not implement')
-    }
+    // stepDisable(step) {
+    //     console.log('not implement')
+    // }
 
 }
