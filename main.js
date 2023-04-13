@@ -55,28 +55,19 @@ synth.receiveControls = function(data) {
 }
 
 /////////////////////////
-
 /**
- * Called by a click on the graph synth circle path. 
  * Send enablesSteps to the sound generator by calling this receiveControls function for each enable step
+ * 
+ * @param {Array of Object} steps Array of steps to send
  */
-circleSynth.sendControlCircle = function() {
+circleSynth.sendControlsSteps = function(steps) {
     let data = [];
-    circleSynth.enablesSteps.forEach(step => {
-        data.push({id: step.id});
-    })
-    synth.receiveControls(data);
-}
 
-/**
- * Called by this.controlStepActivation function. Send the id of the graph synth step activated to the sound generator by calling this receiveControls function
- * @param {Object} step 
- */
-circleSynth.sendControlStep = function(step) {
-    if(step.isEnable === true) {
-        let data = [{id: step.id}];
-        synth.receiveControls(data);
+    for(let i = 0; i < steps.length; i++) {
+        data.push({id: steps[i].id});
     }
+
+    synth.receiveControls(data);
 }
 
 /**
@@ -112,7 +103,7 @@ circleSynth.receiveControls = function(data) {
     }
 
     this.drawCanvas();
-    this.sendControlCircle();
+    this.sendControlsSteps(circleSynth.enablesSteps);
 }
 
 /////////////////////////
@@ -124,7 +115,7 @@ circleSynth.receiveControls = function(data) {
  * @param {Object} oldStep the old sequencer selectedStep
  * @param {*} newStep the new sequencer selectedStep
  */
-circleSeq.sendControlStep = function(oldStep, newStep) {
+circleSeq.sendControlsSteps = function(oldStep, newStep) {
     let data = [{id: oldStep.id}, {id: newStep.id}];
     circleSynth.receiveControls(data);
 }

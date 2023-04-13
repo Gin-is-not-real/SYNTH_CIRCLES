@@ -72,14 +72,11 @@ class GraphCircularSynth extends GraphCircularControler {
         else {
             if(this.enablesSteps.length < this.maxEnablesSteps) {
                 this.stepEnable(step);
+                this.sendControlsSteps([step])
             }
         }
 
         this.drawCanvas();
-
-
-        // send the step for control out 
-        this.sendControlStep(step)
     }
 
     // activer
@@ -96,7 +93,7 @@ class GraphCircularSynth extends GraphCircularControler {
 
 
     controlCircleActivation() {
-        this.sendControlCircle();
+        this.sendControlsSteps(this.enablesSteps);
     }
 
 

@@ -89,12 +89,12 @@ class GraphCircularSequencer extends GraphCircularControler {
     }
 
     selectStep(step) {
-        this.sendControlStep(this.selectedStep, step);
+        this.sendControlsSteps(this.selectedStep, step);
         this.selectedStep = step;
         this.drawCanvas();
     }
     playStep(step) {
-        this.sendControlStep(this.playedStep, step);
+        this.sendControlsSteps(this.playedStep, step);
         this.playedStep = step;
         this.drawCanvas();
     }
@@ -109,7 +109,7 @@ class GraphCircularSequencer extends GraphCircularControler {
         step.isEnable = false;
     }
 
-    sendControlStep(step) {
+    sendControlsSteps(step) {
         // send control step to synth controler: , pour selectionner et lire la sequence
         console.log('please redefine on main ');
     }
