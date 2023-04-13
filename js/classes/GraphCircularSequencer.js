@@ -25,6 +25,7 @@
  */
 class GraphCircularSequencer extends GraphCircularControler {
     selectedStep;   // step control point
+    playedStep;
 
     constructor(canvas, x, y, r, nbrOfSteps = 16) {
         super(canvas, x, y, r, nbrOfSteps = 16);
@@ -36,8 +37,8 @@ class GraphCircularSequencer extends GraphCircularControler {
     init() {
         this.initControlCircle();
         this.initControlsSteps();
-
         this.selectedStep = this.controls.steps[0];
+        this.playedStep = this.controls.steps[0];
         this.drawCanvas();
     }
 
@@ -49,10 +50,19 @@ class GraphCircularSequencer extends GraphCircularControler {
         this.ctx.fillStyle = pnt.isEnable ? "black" : "white";
         this.ctx.fill(pnt.path);
     
+        this.ctx.lineWidth = "1";
         this.ctx.strokeStyle = "black";
-        if(pnt === this.selectedStep) {
+
+        if(pnt === this.playedStep) {
+            this.ctx.lineWidth = "2";
             this.ctx.strokeStyle = "red";
         }
+
+        if(pnt === this.selectedStep) {
+            this.ctx.lineWidth = "2";
+            this.ctx.strokeStyle = "green";
+        }
+
         this.ctx.stroke(pnt.path);
     }
 
@@ -74,6 +84,11 @@ class GraphCircularSequencer extends GraphCircularControler {
     selectStep(step) {
         this.sendControlStep(this.selectedStep, step);
         this.selectedStep = step;
+        this.drawCanvas();
+    }
+    playStep(step) {
+        this.sendControlStep(this.playedStep, step);
+        this.playedStep = step;
         this.drawCanvas();
     }
 

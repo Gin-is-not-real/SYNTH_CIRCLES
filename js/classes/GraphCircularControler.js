@@ -128,6 +128,7 @@ class GraphCircularControler {
      * Draw the control circle path and rotate the canvas
      */
     drawControlCircle() {
+        this.ctx.lineWidth = "1";
         this.ctx.strokeStyle = "black";
         this.ctx.stroke(this.controls.circle.path);
         this.canvas.style.transform = "rotate(-90deg)";

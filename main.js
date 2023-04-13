@@ -132,6 +132,10 @@ circleSeq.sendControlStep = function(oldStep, newStep) {
 // MAIN
 circleSeq.selectStep(circleSeq.controls.steps[0]);
 
+// TODO
+// dissocier step selected and step running
+// ne jouer que les notes allumées
+
 
 ///////////////////////////////////////////
 // GRAPH EVENTS
@@ -147,8 +151,7 @@ btnPlay.addEventListener('click', function(e) {
         let step = circleSeq.controls.steps[count];
         console.log(count, step)
 
-        circleSeq.selectStep(step);
-
+        circleSeq.playStep(step);
         
         count = count === circleSeq.nbrOfSteps -1 ? 0 : count +1;
     }, speed)
