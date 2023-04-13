@@ -17,6 +17,7 @@ const REF_NOTES = [
 
 
 const btnPlay = document.getElementById('master-play');
+const btnStop = document.getElementById('master-stop');
 const inpStep = document.getElementById('inp-steps');
 const btnRefresh = document.getElementById('btn-refresh');
 const sqCanvas = document.getElementById('canvas-seq');
@@ -134,13 +135,15 @@ circleSeq.selectStep(circleSeq.controls.steps[0]);
 
 ///////////////////////////////////////////
 // GRAPH EVENTS
+let intervalId;
+
 btnPlay.addEventListener('click', function(e) {
     console.log(e.target.value)
 
-    let speed = 600;
+    let speed = 300;
     let count = 0;
     
-    setInterval(function() {
+    intervalId = setInterval(function() {
         let step = circleSeq.controls.steps[count];
         console.log(count, step)
 
@@ -149,7 +152,10 @@ btnPlay.addEventListener('click', function(e) {
         
         count = count === circleSeq.nbrOfSteps -1 ? 0 : count +1;
     }, speed)
+})
 
+btnStop.addEventListener('click', function() {
+    clearInterval(intervalId);
 })
 
 btnRefresh.addEventListener('click', function() {
