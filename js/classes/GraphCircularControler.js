@@ -27,36 +27,16 @@ class GraphCircularControler {
     canvas; ctx;    // for draw functions
     x; y; r;        // for init the main path and get steps points
 
-    nbrOfSteps;     // for consulting
-
     controls = {};
 
-    // controls = {
-        // circle: path, 
-        // steps: [{x, y, r, path, id, isEnable}]
-
-
-    constructor(canvas, x, y, r, nbrOfSteps = 16) {
+    constructor(canvas, x, y, r) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
 
         this.x = x;
         this.y = y;
         this.r = r;
-
-        this.nbrOfSteps = nbrOfSteps;
     }
-
-
-    /**
-     * Change nbrOfSteps value, init controls steps and canvas
-     * @param {Integer} nbr 
-     */
-    changeNbrOfSteps(nbr) {
-        this.nbrOfSteps = nbr;
-        this.init();
-    }
-
 
     /**
      * Init all controls and draw canvas by callbacks
@@ -67,7 +47,6 @@ class GraphCircularControler {
         this.drawCanvas();
     }
 
-
     /**
      * Init the control circle with property path
      */
@@ -77,7 +56,6 @@ class GraphCircularControler {
 
         this.controls.circle = {path: circlePath};
     }
-
 
     /**
      * Init controls steps with properties x, y, r, path   from an equal division of the circle
@@ -98,7 +76,7 @@ class GraphCircularControler {
     }
 
 
-
+    
     /**
      * Reset the canvas and draw all elements by callbacks
      */

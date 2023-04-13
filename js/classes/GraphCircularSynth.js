@@ -32,13 +32,18 @@ class GraphCircularSynth extends GraphCircularControler {
     memory = [];
 
     constructor(canvas, x, y, r, nbrOfSteps = 12) {
-        super(canvas, x, y, r, nbrOfSteps = 12);
+        super(canvas, x, y, r);
+
+        this.nbrOfSteps = nbrOfSteps;
     }
 
     /**
      * Init all controls and draw canvas by callbacks
      */
-    init() {
+    init(nbr) {
+        if(nbr !== undefined) {
+            this.nbrOfSteps = nbr;
+        }
         this.enablesSteps = [];
         this.memory = [];
         this.initControlCircle();

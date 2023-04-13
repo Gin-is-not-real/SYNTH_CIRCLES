@@ -33,10 +33,10 @@ synth.outputNode.connect(masterCtx.inputNode);
 
 
 let circleSeq = new GraphCircularSequencer(sqCanvas, sqCanvas.width/2, sqCanvas.width/2, (sqCanvas.width/2) -50);
-circleSeq.init();
+circleSeq.init(16);
 
 let circleSynth = new GraphCircularSynth(syCanvas, syCanvas.width/2, syCanvas.width/2, (syCanvas.width/2) -30);
-circleSynth.changeNbrOfSteps(synth.notesList.length);
+circleSynth.init(synth.notesList.length);
 circleSynth.maxEnablesSteps = synth.nbrOfVoices;
 
 // circleSynth.memory = new Array(circleSeq.nbrOfVoices);
@@ -162,9 +162,9 @@ btnStop.addEventListener('click', function() {
 })
 
 btnRefresh.addEventListener('click', function() {
-    let steps = inpStep.value;
+    let nbrOfSteps = inpStep.value;
     //init sequencer with new nbr of steps
-    circleSeq.changeNbrOfSteps(steps);
+    circleSeq.init(nbrOfSteps);
     circleSynth.init();
 })
 

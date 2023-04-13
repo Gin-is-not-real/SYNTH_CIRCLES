@@ -28,19 +28,26 @@ class GraphCircularSequencer extends GraphCircularControler {
     playedStep;
 
     constructor(canvas, x, y, r, nbrOfSteps = 16) {
-        super(canvas, x, y, r, nbrOfSteps = 16);
+        super(canvas, x, y, r);
+
+        this.nbrOfSteps = nbrOfSteps;
     }
 
     /**
      * Init all controls and draw canvas by callbacks
      */
-    init() {
+    init(nbrOfSteps) {
+        if(nbrOfSteps !== undefined) {
+            this.nbrOfSteps = nbrOfSteps;
+        }
+
         this.initControlCircle();
         this.initControlsSteps();
         this.selectedStep = this.controls.steps[0];
         this.playedStep = this.controls.steps[0];
         this.drawCanvas();
     }
+
 
     /**
      * Draw the control point path from the step point in parameter
@@ -106,8 +113,4 @@ class GraphCircularSequencer extends GraphCircularControler {
         // send control step to synth controler: , pour selectionner et lire la sequence
         console.log('please redefine on main ');
     }
-
-    // playSequence
-    // foreach step, if isEnable:
-    //  send control to synth controler
 }
