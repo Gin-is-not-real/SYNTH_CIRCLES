@@ -22,6 +22,11 @@ const inpStep = document.getElementById('inp-steps');
 const inpBpm = document.getElementById('inp-bmp');
 const btnRefresh = document.getElementById('btn-refresh');
 
+const inpVoices1 = document.getElementById('inp-voices-1');
+const inpVoices2 = document.getElementById('inp-voices-2');
+const btnVoices1 = document.getElementById('btn-voices-1');
+const btnVoices2 = document.getElementById('btn-voices-2');
+
 const sqCanvas = document.getElementById('canvas-seq');
 const syCanvas = document.getElementById('canvas-synth');
 const syCanvas2 = document.getElementById('canvas-synth2');
@@ -120,6 +125,16 @@ btnRefresh.addEventListener('click', function() {
     circleSynth.init();
     circleSynth2.init();
 })
+
+
+
+btnVoices1.addEventListener('click', function() {
+    synth.nbrOfVoices = inpVoices1.value;
+    synth.init();
+    circleSynth.maxEnablesSteps = synth.nbrOfVoices;
+    circleSynth.init();
+})
+
 
 
 circleSeq.canvas.addEventListener('click', (e) => {

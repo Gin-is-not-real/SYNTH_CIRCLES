@@ -37,8 +37,12 @@ legend {
 details {
     position:absolute;
     z-index: 100;
+    background-color: var(--elt-bg-color);
     border: 1px solid var(--border-color);
     padding: 0 8px 2px;
+}
+details[open] {
+    /* position:absolute; */
 }
 canvas {
     background-color: var(--elt-bg-color);
