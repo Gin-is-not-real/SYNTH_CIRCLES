@@ -15,24 +15,14 @@ masterCtx.inputNode.connect(masterCtx.outputNode).connect(audioCtx.destination);
 
 
 
-
 // DOM CONTROL ELEMENTS
 masterCtx.controls = {
-    play:  document.getElementById('master-play'),
-    stop:  document.getElementById('master-stop'),
     gain:  document.getElementById('master-gain'),
 }
 // masterCtx.labels = {};
 
 //////////////////////////////////////////////////////////////////
 // EVENTS LISTENERS
-masterCtx.controls.play.addEventListener('click', function() {
-    masterCtx.gate.gain.value = 1;
-})
-
-masterCtx.controls.stop.addEventListener('click', function() {
-    masterCtx.gate.gain.value = 0;
-})
 
 masterCtx.controls.gain.addEventListener('input', function(e) {
     masterCtx.gain.gain.value = e.target.value;

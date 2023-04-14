@@ -75,14 +75,13 @@ circleSynth.sendControlsSteps = function(steps) {
  * 
  * Record enablesSteps on the memory line corresponding to the old sequencer selectedStep
  * 
- * clear enablesSteps and disable all steps 
+ * clear enablesSteps  
  * 
  * load the memory line according to the sequencer new selectedStep
  * 
  * @param {Array of Object} data an array containing two objects with id property; the old sequencer selectedStep and the new.
  */
 circleSynth.receiveControls = function(data, type) {
-    this.resetEnables();
     this.loadMemoryLine(data.newStep.id);
 
     if(data.newStep.isEnable) {
@@ -93,8 +92,7 @@ circleSynth.receiveControls = function(data, type) {
 /////////////////////////
 /**
  * Called by this.selectStep(). 
- * Send old an new selectedStep id to the synth controler
- * 
+ * Send old an new selected step to the target
  * 
  * @param {Object} oldStep the old sequencer selectedStep
  * @param {*} newStep the new sequencer selectedStep
@@ -108,7 +106,6 @@ circleSeq.sendControlsSteps = function(oldStep, newStep, type) {
 circleSeq.selectStep(circleSeq.controls.steps[0]);
 
 // TODO
-// ne jouer que les notes allumées
 
 
 ///////////////////////////////////////////
