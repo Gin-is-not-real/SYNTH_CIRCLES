@@ -38,9 +38,8 @@ class GraphCircularSequencer extends GraphCircularControler {
         }
 
         this.initControlCircle();
-        this.initControlsSteps();
+        this.initControlsSteps(10);
         this.selectedStep = this.controls.steps[0];
-        this.playedStep = this.controls.steps[0];
         this.drawCanvas();
     }
 
@@ -52,7 +51,7 @@ class GraphCircularSequencer extends GraphCircularControler {
     drawControlPoint(pnt) {
         let bgColor = window.getComputedStyle(this.canvas).getPropertyValue("background-color");
 
-        this.ctx.fillStyle = pnt.isEnable ? "black" : bgColor;
+        this.ctx.fillStyle = pnt.isEnable ? "rgb(70, 89, 91)" : bgColor;
         this.ctx.fill(pnt.path);
     
         this.ctx.lineWidth = "1";
@@ -60,12 +59,12 @@ class GraphCircularSequencer extends GraphCircularControler {
 
         if(pnt === this.playedStep) {
             this.ctx.lineWidth = "2";
-            this.ctx.strokeStyle = "red";
+            this.ctx.strokeStyle = "rgb(225, 32, 32)";      //red
         }
 
         if(pnt === this.selectedStep) {
             this.ctx.lineWidth = "2";
-            this.ctx.strokeStyle = "green";
+            this.ctx.strokeStyle = "rgb(223, 223, 106)";    //yellow
         }
 
         this.ctx.stroke(pnt.path);

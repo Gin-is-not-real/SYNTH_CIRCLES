@@ -55,7 +55,7 @@ class GraphCircularSynth extends GraphCircularControler {
     drawControlPoint(pnt) {
         let bgColor = window.getComputedStyle(this.canvas).getPropertyValue("background-color");
 
-        this.ctx.fillStyle = pnt.isEnable ? "black" : bgColor;
+        this.ctx.fillStyle = pnt.isEnable ? "rgb(70, 89, 91)" : bgColor;
         this.ctx.fill(pnt.path);
     
         this.ctx.strokeStyle = "black";

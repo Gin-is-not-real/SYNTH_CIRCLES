@@ -54,21 +54,20 @@ class GraphCircularControler {
     /**
      * Init controls steps with properties x, y, r, path   from an equal division of the circle
      */
-    initControlsSteps() {
+    initControlsSteps(pntRadius = 6) {
         let pnts = getXYFromCircleEqualDivision(this.x, this.y, this.r, this.nbrOfSteps);
-        let r = this.pntRadius != undefined ? this.pntRadius : 6;
+        // let r = this.pntRadius != undefined ? this.pntRadius : 6;
 
         pnts.forEach(pnt => {
             pnt.id = pnts.indexOf(pnt);
             pnt.isEnable = false;
     
             pnt.path = new Path2D();
-            pnt.path.arc(pnt.x, pnt.y, r, 0, 2*Math.PI);
+            pnt.path.arc(pnt.x, pnt.y, pntRadius, 0, 2*Math.PI);
         });
     
         this.controls.steps = pnts;
     }
-
 
     
     /**

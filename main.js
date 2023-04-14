@@ -105,7 +105,7 @@ btnPlay.addEventListener('click', function(e) {
 btnStop.addEventListener('click', function() {
     clearInterval(intervalId);
     intervalId = undefined;
-    circleSeq.playedStep = circleSeq.controls.steps[0];
+    circleSeq.playedStep = undefined;
     circleSeq.drawCanvas();
 })
 
