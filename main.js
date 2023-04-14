@@ -22,6 +22,7 @@ const inpStep = document.getElementById('inp-steps');
 const btnRefresh = document.getElementById('btn-refresh');
 const sqCanvas = document.getElementById('canvas-seq');
 const syCanvas = document.getElementById('canvas-synth');
+const syCanvas2 = document.getElementById('canvas-synth2');
 
 
 
@@ -31,15 +32,21 @@ const syCanvas = document.getElementById('canvas-synth');
 let synth = new BasicPolySynth(3, REF_NOTES);
 synth.outputNode.connect(masterCtx.inputNode);
 
+let synth2 = new BasicPolySynth(3, REF_NOTES);
+synth2.outputNode.connect(masterCtx.inputNode);
+
 
 let circleSeq = new GraphCircularSequencer(sqCanvas, sqCanvas.width/2, sqCanvas.width/2, (sqCanvas.width/2) -50);
 circleSeq.init(16);
+
 
 let circleSynth = new GraphCircularSynth(syCanvas, syCanvas.width/2, syCanvas.width/2, (syCanvas.width/2) -30);
 circleSynth.init(synth.notesList.length);
 circleSynth.maxEnablesSteps = synth.nbrOfVoices;
 
-// circleSynth.memory = new Array(circleSeq.nbrOfVoices);
+let circleSynth2 = new GraphCircularSynth(syCanvas2, syCanvas2.width/2, syCanvas2.width/2, (syCanvas2.width/2) -30);
+circleSynth2.init(synth2.notesList.length);
+circleSynth2.maxEnablesSteps = synth2.nbrOfVoices;
 
 ///////////////////////////////////////////
 // FUNCTION
@@ -53,7 +60,12 @@ synth.receiveControls = function(data) {
         synth.trig(synth.oscList[i], f)
     }
 }
-
+synth2.receiveControls = function(data) {
+    for(let i = 0; i < data.length; i++) {
+        let f = synth2.notesList[data[i].id].frequency;
+        synth2.trig(synth2.oscList[i], f)
+    }
+}
 /////////////////////////
 /**
  * Send enablesSteps to the sound generator by calling this receiveControls function for each enable step
@@ -68,6 +80,15 @@ circleSynth.sendControlsSteps = function(steps) {
     }
 
     synth.receiveControls(data);
+}
+circleSynth2.sendControlsSteps = function(steps) {
+    let data = [];
+
+    for(let i = 0; i < steps.length; i++) {
+        data.push({id: steps[i].id});
+    }
+
+    synth2.receiveControls(data);
 }
 
 /**
@@ -88,7 +109,13 @@ circleSynth.receiveControls = function(data, type) {
         this.sendControlsSteps(circleSynth.enablesSteps);
     }
 }
+circleSynth2.receiveControls = function(data, type) {
+    this.loadMemoryLine(data.newStep.id);
 
+    if(data.newStep.isEnable) {
+        this.sendControlsSteps(circleSynth2.enablesSteps);
+    }
+}
 /////////////////////////
 /**
  * Called by this.selectStep(). 
@@ -100,6 +127,7 @@ circleSynth.receiveControls = function(data, type) {
 circleSeq.sendControlsSteps = function(oldStep, newStep, type) {
     let data = {oldStep: oldStep, newStep: newStep};
     circleSynth.receiveControls(data, type);
+    circleSynth2.receiveControls(data, type);
 }
 ///////////////////////////////////////////
 // MAIN
@@ -167,6 +195,26 @@ circleSynth.canvas.addEventListener('click', (e) => {
     if(isPointTouched === false) {
         if(circleSynth.ctx.isPointInPath(circleSynth.controls.circle.path, e.offsetX, e.offsetY)) {
             circleSynth.controlCircleActivation();
+        }
+    }
+})
+circleSynth2.canvas.addEventListener('click', (e) => {
+    let isPointTouched = false;
+
+    // check if a point has been touched
+    circleSynth2.controls.steps.forEach(step => {
+
+        if(circleSynth2.ctx.isPointInPath(step.path, e.offsetX, e.offsetY)) {
+            circleSynth2.controlStepActivation(step);
+
+            isPointTouched = true;
+            return;
+        }
+    })
+
+    if(isPointTouched === false) {
+        if(circleSynth2.ctx.isPointInPath(circleSynth2.controls.circle.path, e.offsetX, e.offsetY)) {
+            circleSynth2.controlCircleActivation();
         }
     }
 })
