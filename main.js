@@ -19,11 +19,12 @@ const REF_NOTES = [
 const btnPlay = document.getElementById('master-play');
 const btnStop = document.getElementById('master-stop');
 const inpStep = document.getElementById('inp-steps');
+const inpBpm = document.getElementById('inp-bmp');
 const btnRefresh = document.getElementById('btn-refresh');
+
 const sqCanvas = document.getElementById('canvas-seq');
 const syCanvas = document.getElementById('canvas-synth');
 const syCanvas2 = document.getElementById('canvas-synth2');
-
 
 
 ///////////////////////////////////////////
@@ -77,13 +78,17 @@ circleSeq.selectStep(circleSeq.controls.steps[0]);
 
 
 ///////////////////////////////////////////
-// GRAPH EVENTS
+// EVENTS
 let intervalId;
+/*
+1m = 60 000ms
+1bpm = 60 000ms/1bat
+*/
+const minToMs = 60000;
+let bpm = 130;
+
 
 btnPlay.addEventListener('click', function(e) {
-    console.log(e.target.value)
-
-    let speed = 600;
     let count = 0;
     
     intervalId = setInterval(function() {
@@ -92,11 +97,15 @@ btnPlay.addEventListener('click', function(e) {
         circleSeq.playStep(step);
         
         count = count === circleSeq.nbrOfSteps -1 ? 0 : count +1;
-    }, speed)
+    }, minToMs/bpm)
 })
 
 btnStop.addEventListener('click', function() {
     clearInterval(intervalId);
+})
+
+inpBpm.addEventListener('input', function(e) {
+    bpm = parseInt(e.target.value);
 })
 
 btnRefresh.addEventListener('click', function() {
@@ -104,6 +113,7 @@ btnRefresh.addEventListener('click', function() {
     //init sequencer with new nbr of steps
     circleSeq.init(nbrOfSteps);
     circleSynth.init();
+    circleSynth2.init();
 })
 
 
