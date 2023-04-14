@@ -131,7 +131,7 @@ class GraphCircularSynth extends GraphCircularControler {
     }
 
     /**
-     * Load enablesSteps from the memory line at the index in parameter 
+     * Load enablesSteps from the memory line at the index in parameter. Reset enablesSteps, update selectedMemoryId, make enables steps stored on memory then draw the canvas
      * @param {Integer} lineId 
      */
     loadMemoryLine(lineId) {
