@@ -91,17 +91,20 @@ let bpm = 130;
 btnPlay.addEventListener('click', function(e) {
     let count = 0;
     
-    intervalId = setInterval(function() {
-        let step = circleSeq.controls.steps[count];
-
-        circleSeq.playStep(step);
-        
-        count = count === circleSeq.nbrOfSteps -1 ? 0 : count +1;
-    }, minToMs/bpm)
+    if(intervalId === undefined) {
+        intervalId = setInterval(function() {
+            let step = circleSeq.controls.steps[count];
+    
+            circleSeq.playStep(step);
+            
+            count = count === circleSeq.nbrOfSteps -1 ? 0 : count +1;
+        }, minToMs/bpm)
+    }
 })
 
 btnStop.addEventListener('click', function() {
     clearInterval(intervalId);
+    intervalId = undefined;
 })
 
 inpBpm.addEventListener('input', function(e) {
