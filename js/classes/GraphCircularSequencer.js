@@ -50,7 +50,9 @@ class GraphCircularSequencer extends GraphCircularControler {
      * @param {Object} pnt 
      */
     drawControlPoint(pnt) {
-        this.ctx.fillStyle = pnt.isEnable ? "black" : "white";
+        let bgColor = window.getComputedStyle(this.canvas).getPropertyValue("background-color");
+
+        this.ctx.fillStyle = pnt.isEnable ? "black" : bgColor;
         this.ctx.fill(pnt.path);
     
         this.ctx.lineWidth = "1";

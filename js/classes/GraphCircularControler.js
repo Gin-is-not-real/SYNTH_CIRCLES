@@ -75,7 +75,9 @@ class GraphCircularControler {
      * Reset the canvas and draw all elements by callbacks
      */
     drawCanvas() {
-        this.ctx.fillStyle = "white";
+        let s = window.getComputedStyle(this.canvas);
+
+        this.ctx.fillStyle = s.getPropertyValue("background-color");
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.drawControlCircle();
@@ -102,6 +104,9 @@ class GraphCircularControler {
      * @param {Object} pnt 
      */
     drawControlPoint(pnt) {
+        let bg = window.getComputedStyle(this.canvas).getPropertyValue("background-color");
+        console.log(bg)
+
         this.ctx.fillStyle = pnt.isEnable ? "black" : "white";
         this.ctx.fill(pnt.path);
     
