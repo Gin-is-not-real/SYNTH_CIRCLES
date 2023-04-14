@@ -127,8 +127,11 @@ class GraphCircularSequencer extends GraphCircularControler {
     }
 
 
-    sendControlsSteps(step) {
-        // send control step to synth controler: , pour selectionner et lire la sequence
-        console.log('please redefine on main ');
+    sendControlsSteps(oldStep, newStep, type) {
+        let data = {oldStep: oldStep, newStep: newStep};
+    
+        this.targets.forEach(targ => {
+            targ.receiveControls(data, type);
+        })
     }
 }

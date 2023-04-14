@@ -68,76 +68,12 @@ synth2.receiveControls = function(data) {
         this.trig(this.oscList[i], f)
     }
 }
-/////////////////////////
-/**
- * Send enablesSteps to the sound generator by calling this receiveControls function for each enable step
- * 
- * @param {Array of Object} steps Array of steps to send
- */
-circleSynth.sendControlsSteps = function(steps) {
-    let data = [];
 
-    for(let i = 0; i < steps.length; i++) {
-        data.push({id: steps[i].id});
-    }
 
-    this.target.receiveControls(data);
-}
-circleSynth2.sendControlsSteps = function(steps) {
-    let data = [];
 
-    for(let i = 0; i < steps.length; i++) {
-        data.push({id: steps[i].id});
-    }
-
-    this.target.receiveControls(data);
-}
-
-/**
- * Called by the sequencer sendControlStep function.
- * 
- * Record enablesSteps on the memory line corresponding to the old sequencer selectedStep
- * 
- * clear enablesSteps  
- * 
- * load the memory line according to the sequencer new selectedStep
- * 
- * @param {Array of Object} data an array containing two objects with id property; the old sequencer selectedStep and the new.
- */
-circleSynth.receiveControls = function(data, type) {
-    this.loadMemoryLine(data.newStep.id);
-
-    if(data.newStep.isEnable) {
-        this.sendControlsSteps(this.enablesSteps);
-    }
-}
-circleSynth2.receiveControls = function(data, type) {
-    this.loadMemoryLine(data.newStep.id);
-
-    if(data.newStep.isEnable) {
-        this.sendControlsSteps(this.enablesSteps);
-    }
-}
-/////////////////////////
-/**
- * Called by this.selectStep(). 
- * Send old an new selected step to the target
- * 
- * @param {Object} oldStep the old sequencer selectedStep
- * @param {*} newStep the new sequencer selectedStep
- */
-circleSeq.sendControlsSteps = function(oldStep, newStep, type) {
-    let data = {oldStep: oldStep, newStep: newStep};
-
-    this.targets.forEach(targ => {
-        targ.receiveControls(data, type);
-    })
-}
 ///////////////////////////////////////////
 // MAIN
 circleSeq.selectStep(circleSeq.controls.steps[0]);
-
-// TODO
 
 
 ///////////////////////////////////////////

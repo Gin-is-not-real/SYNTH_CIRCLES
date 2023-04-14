@@ -149,8 +149,39 @@ class GraphCircularSynth extends GraphCircularControler {
         this.drawCanvas();
     }
 
-    sendControlsSteps(step) {
-        // redefined on main
-        console.log('please redefine on main ');
+
+    /**
+     * Send enablesSteps to the sound generator by calling this receiveControls function for each enable step
+     * 
+     * @param {Array of Object} steps Array of steps to send
+     */
+    sendControlsSteps(steps) {
+        let data = [];
+
+        for(let i = 0; i < steps.length; i++) {
+            data.push({id: steps[i].id});
+        }
+
+        this.target.receiveControls(data);
     }
+
+    /**
+     * Called by the sequencer sendControlStep function.
+     * 
+     * Record enablesSteps on the memory line corresponding to the old sequencer selectedStep
+     * 
+     * clear enablesSteps  
+     * 
+     * load the memory line according to the sequencer new selectedStep
+     * 
+     * @param {Array of Object} data an array containing two objects with id property; the old sequencer selectedStep and the new.
+     */
+    receiveControls(data, type) {
+        this.loadMemoryLine(data.newStep.id);
+
+        if(data.newStep.isEnable) {
+            this.sendControlsSteps(this.enablesSteps);
+        }
+    }
+
 }
