@@ -27,27 +27,37 @@
                 <input type="range" id="master-gain" min="0" max="1" step="0.01">
             </fieldset>
 
-                <fieldset>
-                    <legend>bpm</legend>
-                    <input type="number" name="bmp" id="inp-bmp" value="120">
-                </fieldset>
+            <fieldset>
+                <legend>bpm</legend>
+                <input type="number" name="bmp" id="inp-bmp" value="120">
+            </fieldset>
         </fieldset>
 
-        <!-- <fieldset>
-            <legend>Steps</legend>
-                <input type="number" name="steps" id="inp-steps" value="12">
-                <input type="button" id="btn-refresh"value="refresh">
-        </fieldset> -->
-
-        <div class="hor-flex">
-            <fieldset>
-                <legend>sequencer</legend>
+        <!-- <fieldset class="hor-flex">
                 <fieldset>
                     <legend>Steps</legend>
                         <input type="number" name="steps" id="inp-steps" value="12">
                         <input type="button" id="btn-refresh"value="refresh">
                 </fieldset>
+
+            </fieldset> -->
+
+
+        <div class="hor-flex">
+            <fieldset>
+                <legend>sequencer</legend>
+
+                <details>
+                    <summary>options</summary> 
+                    <fieldset>
+                        <legend>Steps</legend>
+                            <input type="number" name="steps" id="inp-steps" value="12">
+                            <input type="button" id="btn-refresh"value="refresh">
+                    </fieldset>
+                </details>
+
                 <canvas id="canvas-seq" width="300" height="300"></canvas>
+
             </fieldset>
 
             <div>
@@ -86,9 +96,5 @@
 
 
 <script src="main.js"></script>
-
-<style>
-
-</style>
 
 </html>

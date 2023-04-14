@@ -34,6 +34,12 @@ legend {
     margin: 0 4px;
     padding: 0 2px;
 }
+details {
+    position:absolute;
+    z-index: 100;
+    border: 1px solid var(--border-color);
+    padding: 0 8px 2px;
+}
 canvas {
     background-color: var(--elt-bg-color);
     /* border: 1px solid black; */
