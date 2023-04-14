@@ -10,81 +10,61 @@
 <body>
 
     <main>
-        
-        <!-- <section id="master-section" class="vert-flex">
-            <fieldset id="field-master" class="hor-flex">
-                <legend>Master</legend>
+        <!-- transport -->
 
-                <fieldset class="hor-flex">
-                    <input type="button" id="master-play" value="play">
-                    <input type="button" id="master-stop" value="stop">
-                </fieldset>
+        <fieldset class="hor-flex">
+            <legend>Master</legend>
+
+            <fieldset class="hor-flex">
+                <legend>transport</legend>
+                <input type="button" id="master-play" value="play">
+                <input type="button" id="master-stop" value="stop">
+            </fieldset>
+
+            <fieldset>
+                <legend>gain</legend>
+                <input type="range" id="master-gain" min="0" max="1" step="0.01">
+            </fieldset>
 
                 <fieldset>
-                    <legend>gain</legend>
-                    <input type="range" id="master-gain" min="0" max="1" step="0.01">
+                    <legend>bpm</legend>
+                    <input type="number" name="bmp" id="inp-bmp" value="120">
                 </fieldset>
-            </fieldset>
-        </section> -->
+        </fieldset>
+
+        <!-- <fieldset>
+            <legend>Steps</legend>
+                <input type="number" name="steps" id="inp-steps" value="12">
+                <input type="button" id="btn-refresh"value="refresh">
+        </fieldset> -->
 
         <div class="hor-flex">
-            <section id="seq-section" class="vert-flex">
-                <fieldset class="vert-flex">
-                    <legend>Seq</legend>
-
-
-                    <fieldset class="hor-flex">
-                        <input type="button" id="master-play" value="play">
-                        <input type="button" id="master-stop" value="stop">
-    
-                        <input type="range" id="master-gain" min="0" max="1" step="0.01">
-
-                        <fieldset>
-                            <legend>Bpm</legend>
-                            <input type="number" name="bmp" id="inp-bmp" value="120">
-                        </fieldset>
-                    </fieldset>
-
-
-                    <div class="hor-flex">
-                        <fieldset>
-                            <legend>Steps</legend>
-                            <input type="number" name="steps" id="inp-steps" value="12">
-                            <input type="button" id="btn-refresh"value="refresh">
-                        </fieldset>
-        
-
-                    </div>
-    
-                    <div class="hor-flex">
-                        <canvas id="canvas-seq" width="300" height="300"></canvas>
-                    </div>
+            <fieldset>
+                <legend>sequencer</legend>
+                <fieldset>
+                    <legend>Steps</legend>
+                        <input type="number" name="steps" id="inp-steps" value="12">
+                        <input type="button" id="btn-refresh"value="refresh">
                 </fieldset>
-            </section>
-    
-    
-            <section id="synth-section" class="vert-flex">
-                <fieldset class="vert-flex">
-                    <legend>synth</legend>
-    
-                    <div class="hor-flex">
-                        <canvas id="canvas-synth" width="150" height="150"></canvas>
-                    </div>
-                </fieldset>
-            </section>
+                <canvas id="canvas-seq" width="300" height="300"></canvas>
+            </fieldset>
 
-            
-            <section id="synth2-section" class="vert-flex">
-                <fieldset class="vert-flex">
+            <div>
+                <fieldset>
+                    <legend>synth 1</legend>
+                    <canvas id="canvas-synth" width="150" height="150"></canvas>
+                </fieldset>
+            </div>
+
+            <div>
+                <fieldset>
                     <legend>synth 2</legend>
-    
-                    <div class="hor-flex">
-                        <canvas id="canvas-synth2" width="150" height="150"></canvas>
-                    </div>
+                    <canvas id="canvas-synth2" width="150" height="150"></canvas>
                 </fieldset>
-            </section>
-        </div>
+            </div>
 
+
+        </div>
 
     </main>
 
@@ -107,6 +87,9 @@
 <script src="main.js"></script>
 
 <style>
+    html {
+        /* background-color: #32395973; */
+    }
     html * {
         margin: 0;
         padding: 0;
@@ -118,18 +101,32 @@
         padding: 0 30px;
         /* margin: 0 auto; */
     }
-    #canvas-seq {
-        border: 1px solid black;
+    fieldset {
+        margin: 2px;
+        padding: 4px;
+        border-radius: 2px;
+
+        /* background-color: #3a96993b; */
+        /* border-color: cadetblue; */
+    }
+    legend {
+        margin: 0 4px;
+        padding: 0 2px;
+    }
+    canvas {
+        /* border: 1px solid black; */
     }
 
     .vert-flex {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        /* max-height: fit-content; */
     }
     .hor-flex {
         display: flex;
         flex-direction: row;
+        /* max-width: fit-content; */
     }
 </style>
 
