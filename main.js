@@ -36,18 +36,20 @@ let synth2 = new BasicPolySynth(3, REF_NOTES);
 synth2.outputNode.connect(masterCtx.inputNode);
 
 
-let circleSeq = new GraphCircularSequencer(sqCanvas, sqCanvas.width/2, sqCanvas.width/2, (sqCanvas.width/2) -50);
-circleSeq.init(16);
-
-
 let circleSynth = new GraphCircularSynth(syCanvas, syCanvas.width/2, syCanvas.width/2, (syCanvas.width/2) -30);
 circleSynth.init(synth.notesList.length);
-circleSynth.maxEnablesSteps = synth.nbrOfVoices;
+circleSynth.target = synth;
+circleSynth.maxEnablesSteps = circleSynth.target.nbrOfVoices;
 
 let circleSynth2 = new GraphCircularSynth(syCanvas2, syCanvas2.width/2, syCanvas2.width/2, (syCanvas2.width/2) -30);
 circleSynth2.init(synth2.notesList.length);
-circleSynth2.maxEnablesSteps = synth2.nbrOfVoices;
+circleSynth2.target = synth2;
+circleSynth2.maxEnablesSteps = circleSynth2.target.nbrOfVoices;
 
+
+let circleSeq = new GraphCircularSequencer(sqCanvas, sqCanvas.width/2, sqCanvas.width/2, (sqCanvas.width/2) -50);
+circleSeq.init(16);
+circleSeq.targets = [circleSynth, circleSynth2];
 ///////////////////////////////////////////
 // FUNCTION
 /**
@@ -56,14 +58,14 @@ circleSynth2.maxEnablesSteps = synth2.nbrOfVoices;
  */
 synth.receiveControls = function(data) {
     for(let i = 0; i < data.length; i++) {
-        let f = synth.notesList[data[i].id].frequency;
-        synth.trig(synth.oscList[i], f)
+        let f = this.notesList[data[i].id].frequency;
+        this.trig(this.oscList[i], f)
     }
 }
 synth2.receiveControls = function(data) {
     for(let i = 0; i < data.length; i++) {
-        let f = synth2.notesList[data[i].id].frequency;
-        synth2.trig(synth2.oscList[i], f)
+        let f = this.notesList[data[i].id].frequency;
+        this.trig(this.oscList[i], f)
     }
 }
 /////////////////////////
@@ -79,7 +81,7 @@ circleSynth.sendControlsSteps = function(steps) {
         data.push({id: steps[i].id});
     }
 
-    synth.receiveControls(data);
+    this.target.receiveControls(data);
 }
 circleSynth2.sendControlsSteps = function(steps) {
     let data = [];
@@ -88,7 +90,7 @@ circleSynth2.sendControlsSteps = function(steps) {
         data.push({id: steps[i].id});
     }
 
-    synth2.receiveControls(data);
+    this.target.receiveControls(data);
 }
 
 /**
@@ -106,14 +108,14 @@ circleSynth.receiveControls = function(data, type) {
     this.loadMemoryLine(data.newStep.id);
 
     if(data.newStep.isEnable) {
-        this.sendControlsSteps(circleSynth.enablesSteps);
+        this.sendControlsSteps(this.enablesSteps);
     }
 }
 circleSynth2.receiveControls = function(data, type) {
     this.loadMemoryLine(data.newStep.id);
 
     if(data.newStep.isEnable) {
-        this.sendControlsSteps(circleSynth2.enablesSteps);
+        this.sendControlsSteps(this.enablesSteps);
     }
 }
 /////////////////////////
@@ -126,8 +128,10 @@ circleSynth2.receiveControls = function(data, type) {
  */
 circleSeq.sendControlsSteps = function(oldStep, newStep, type) {
     let data = {oldStep: oldStep, newStep: newStep};
-    circleSynth.receiveControls(data, type);
-    circleSynth2.receiveControls(data, type);
+
+    this.targets.forEach(targ => {
+        targ.receiveControls(data, type);
+    })
 }
 ///////////////////////////////////////////
 // MAIN
