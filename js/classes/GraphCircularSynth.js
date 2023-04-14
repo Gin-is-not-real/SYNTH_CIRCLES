@@ -140,7 +140,7 @@ class GraphCircularSynth extends GraphCircularControler {
 
         this.selectedMemoryId = lineId;
 
-        if(circleSynth.memory[lineId] !== undefined) {
+        if(this.memory[lineId] !== undefined) {
             this.memory[lineId].forEach(mem => {
                 this.stepEnable(mem);
             })
